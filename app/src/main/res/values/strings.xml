@@ -10,4 +10,14 @@
       the License.
       -->
     <string name="app_name">AndroidDevChallenge</string>
+    <string name="gender_female">Female</string>
+    <string name="gender_male">Male</string>
+    <plurals name="age_month">
+        <item quantity="one">%s Month</item>
+        <item quantity="other">%s Months</item>
+    </plurals>
+    <plurals name="age_year">
+        <item quantity="one">%s Year</item>
+        <item quantity="other">%s Years</item>
+    </plurals>
 </resources>

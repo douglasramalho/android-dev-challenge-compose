@@ -15,45 +15,67 @@
  */
 package com.example.androiddevchallenge.ui.theme
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.darkColors
-import androidx.compose.material.lightColors
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.navigation.NavController
+import com.example.androiddevchallenge.R
 
 private val DarkColorPalette = darkColors(
-    primary = purple200,
-    primaryVariant = purple700,
-    secondary = teal200
+    primary = orange900,
+    primaryVariant = red900,
+    secondary = blue700,
+    background = white50
 )
 
 private val LightColorPalette = lightColors(
-    primary = purple500,
-    primaryVariant = purple700,
-    secondary = teal200
-
-        /* Other default colors to override
-    background = Color.White,
+    primary = orange900,
+    primaryVariant = red900,
+    secondary = blue700,
+    background = white50,
     surface = Color.White,
     onPrimary = Color.White,
     onSecondary = Color.Black,
     onBackground = Color.Black,
     onSurface = Color.Black,
-    */
 )
 
 @Composable
-fun MyTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable() () -> Unit) {
+fun MyTheme(
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    navController: NavController,
+    title: String,
+    content: @Composable () -> Unit
+) {
     val colors = if (darkTheme) {
         DarkColorPalette
     } else {
         LightColorPalette
     }
 
-    MaterialTheme(
-        colors = colors,
-        typography = typography,
-        shapes = shapes,
-        content = content
-    )
+    MaterialTheme(colors = colors, typography = typography, shapes = shapes) {
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    navigationIcon = {
+                        if (navController.previousBackStackEntry != null) {
+                            IconButton(onClick = { navController.navigateUp() }) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.ic_back),
+                                    contentDescription = null
+                                )
+                            }
+                        }
+                    },
+                    title = { Text(text = title) }
+                )
+            },
+            content = {
+                Surface(color = MaterialTheme.colors.background) { content() }
+            }
+        )
+    }
 }
