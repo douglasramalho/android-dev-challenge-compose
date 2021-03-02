@@ -10,8 +10,18 @@
       the License.
       -->
     <string name="app_name">AndroidDevChallenge</string>
+    <string name="label_age">Age</string>
+    <string name="label_sex">Sex</string>
+    <string name="label_size">Size</string>
+    <string name="size_small">Small</string>
+    <string name="size_medium">Medium</string>
+    <string name="size_large">Large</string>
     <string name="gender_female">Female</string>
     <string name="gender_male">Male</string>
+    <string name="rescuer">Rescuer</string>
+    <string name="button_adopt_me">Meooow! Adopt Me</string>
+    <string name="home_screen_error">Error when trying to get the cats for adoption. Try again later!</string>
+    <string name="detail_screen_error">Error when trying to get the Pet detail. Try again later!</string>
     <plurals name="age_month">
         <item quantity="one">%s Month</item>
         <item quantity="other">%s Months</item>
@@ -20,4 +30,7 @@
         <item quantity="one">%s Year</item>
         <item quantity="other">%s Years</item>
     </plurals>
+    <string name="description_pet_photo">%1$s photo. Breed: %1$s</string>
+    <string name="description_pet_address">Address: %1$s</string>
+    <string name="description_pet_favorite_button">Favorite %1$s</string>
 </resources>

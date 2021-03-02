@@ -1,19 +1,15 @@
 package com.example.androiddevchallenge
 
-import androidx.compose.animation.Crossfade
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavOptions
 import androidx.navigation.NavOptionsBuilder
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.navigate
-import androidx.navigation.compose.rememberNavController
+import androidx.navigation.NavType
+import androidx.navigation.compose.*
 import com.example.androiddevchallenge.ui.detail.DetailScreen
 import com.example.androiddevchallenge.ui.home.HomeScreen
 
 object Routes {
     const val HOME_ROUTE = "home"
-    const val DETAIL_ROUTE = "detail"
+    const val DETAIL_ROUTE = "detail/{petId}"
 }
 
 @Composable
@@ -22,8 +18,8 @@ fun NavGraph(startDestination: String = Routes.HOME_ROUTE) {
 
     NavHost(navController = navController, startDestination = startDestination) {
         composable(Routes.HOME_ROUTE) {
-            HomeScreen(navController) {
-                navController.navigate(Routes.DETAIL_ROUTE) {
+            HomeScreen(navController) { petId ->
+                navController.navigate("detail/$petId") {
                     // It is not working yet!
                     NavOptionsBuilder()
                         .anim {
@@ -36,8 +32,12 @@ fun NavGraph(startDestination: String = Routes.HOME_ROUTE) {
             }
 
         }
-        composable(Routes.DETAIL_ROUTE) {
-            DetailScreen(navController)
+        composable(
+            Routes.DETAIL_ROUTE,
+            arguments = listOf(navArgument("petId") { type = NavType.IntType })
+        ) { backStackEntry ->
+
+            DetailScreen(navController, backStackEntry.arguments?.getInt("petId") ?: 0)
         }
     }
 }

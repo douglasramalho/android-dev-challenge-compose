@@ -7,13 +7,16 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Card
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -21,70 +24,97 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.androiddevchallenge.R
-import com.example.androiddevchallenge.data.Cat
-import com.example.androiddevchallenge.data.GenderType
-import com.example.androiddevchallenge.data.Rescuer
-import com.example.androiddevchallenge.data.cats
+import com.example.androiddevchallenge.data.model.PetForAdoption
+import com.example.androiddevchallenge.data.model.GenderType
+import com.example.androiddevchallenge.data.model.Rescuer
+import com.example.androiddevchallenge.data.model.ageStringResource
+import com.example.androiddevchallenge.data.repository.MemoryDataSource
+import com.example.androiddevchallenge.data.repository.MeowRepositoryImpl
 import com.example.androiddevchallenge.ui.base.BaseScreen
+import com.example.androiddevchallenge.ui.base.ContentLoading
+import com.example.androiddevchallenge.ui.strValue
+import com.example.androiddevchallenge.ui.strValueArgs
 import com.example.androiddevchallenge.ui.theme.orange900
-import java.text.NumberFormat
+import dev.chrisbanes.accompanist.coil.CoilImage
 
 @Composable
-fun HomeScreen(navController: NavController, darkTheme: Boolean = false, petClicked: () -> Unit) {
+fun HomeScreen(
+    navController: NavController,
+    darkTheme: Boolean = false,
+    petClicked: (petId: Int) -> Unit
+) {
+    val viewModel: HomeViewModel = viewModel(
+        key = "homeViewModel",
+        factory = HomeViewModel.HomeViewModelFactory(
+            MeowRepositoryImpl(MemoryDataSource())
+        )
+    )
+
     BaseScreen(navController = navController, title = "Meow Finder", darkTheme = darkTheme) {
-        CatsList(cats = cats, petClicked)
+        PetsForAdoptionList(viewModel, petClicked)
     }
 }
 
 @Composable
-private fun CatsList(cats: List<Cat>, petClicked: () -> Unit) {
-    Box(
-        Modifier.fillMaxHeight()
+private fun PetsForAdoptionList(viewModel: HomeViewModel, petClicked: (petId: Int) -> Unit) {
+    val homeState by viewModel.homeState.observeAsState()
+
+    Box(Modifier.fillMaxHeight()) {
+        when (homeState) {
+            HomeViewModel.HomeState.Loading -> ContentLoading()
+            is HomeViewModel.HomeState.Success -> {
+                val cats = (homeState as HomeViewModel.HomeState.Success).pets
+                PetListContent(catsForAdoption = cats, petClicked = petClicked)
+            }
+            is HomeViewModel.HomeState.Error -> {
+                // TODO: handle error state
+            }
+        }
+    }
+}
+
+@Composable
+private fun PetListContent(
+    catsForAdoption: List<PetForAdoption>,
+    petClicked: (petId: Int) -> Unit
+) {
+    LazyColumn(
+        modifier = Modifier.fillMaxWidth()
     ) {
-        LazyColumn(
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            items(cats) { cat ->
-                CatItem(cat = cat, rescuer = Rescuer("Douglas"), petClicked)
-                Spacer(modifier = Modifier.size(16.dp))
+        items(catsForAdoption) { cat ->
+            Card(modifier = Modifier.fillMaxSize()) {
+                Column {
+                    PetItemHeader(rescuer = cat.rescuer)
+                    Column(modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { petClicked(cat.id) }
+                    ) {
+                        PetItemContent(pet = cat)
+                    }
+                }
             }
+
+            Spacer(modifier = Modifier.size(16.dp))
         }
     }
 }
 
 @Composable
-private fun CatItem(cat: Cat, rescuer: Rescuer, petClicked: () -> Unit) {
-    Card(modifier = Modifier.fillMaxSize()) {
-        Column {
-            CatItemHeader(rescuer = rescuer)
-            Column(modifier = Modifier
-                .fillMaxWidth()
-                .clickable {
-                    petClicked()
-                }) {
-                CatItemContent(cat = cat)
-            }
-        }
-    }
-}
-
-@Composable
-private fun CatItemHeader(rescuer: Rescuer) {
+private fun PetItemHeader(rescuer: Rescuer) {
     Row(modifier = Modifier.padding(8.dp)) {
         Column(
             modifier = Modifier
                 .width(40.dp)
                 .height(40.dp)
                 .wrapContentSize(Alignment.Center)
-                .clip(
-                    CircleShape
-                )
+                .clip(CircleShape)
         ) {
             Image(
-                painter = painterResource(id = R.drawable.ic_rescue_photo_background),
+                painter = painterResource(id = rescuer.photo),
                 contentDescription = null
             )
         }
@@ -99,7 +129,7 @@ private fun CatItemHeader(rescuer: Rescuer) {
             }
             Row {
                 Text(
-                    text = "Rescuer",
+                    text = stringResource(id = R.string.rescuer),
                     fontSize = 14.sp
                 )
             }
@@ -108,7 +138,7 @@ private fun CatItemHeader(rescuer: Rescuer) {
 }
 
 @Composable
-private fun CatItemContent(cat: Cat) {
+private fun PetItemContent(pet: PetForAdoption) {
     ConstraintLayout(
         modifier = Modifier
             .fillMaxWidth()
@@ -117,19 +147,16 @@ private fun CatItemContent(cat: Cat) {
         val (catGender, catPhoto) = createRefs()
 
         Image(
-            painter = painterResource(id = cat.photo),
-            contentDescription = null,
-            modifier = Modifier
-                .constrainAs(catPhoto) {
-                    start.linkTo(parent.start)
-                    top.linkTo(parent.top)
-                    end.linkTo(parent.end)
-                    bottom.linkTo(parent.bottom)
-                }
-                .fillMaxSize()
+            painter = painterResource(id = pet.photo),
+            contentDescription = R.string.description_pet_photo.strValueArgs(
+                pet.name,
+                pet.breed
+            ),
+            modifier = Modifier.fillMaxWidth(),
+            contentScale = ContentScale.Crop
         )
 
-        val imageGender = when (cat.gender) {
+        val imageGender = when (pet.gender) {
             GenderType.Female -> R.drawable.ic_female_background
             GenderType.Male -> R.drawable.ic_male_background
         }
@@ -151,24 +178,8 @@ private fun CatItemContent(cat: Cat) {
     ) {
         val (nameAge, breed) = createRefs()
 
-        val ageResourceValue = if (cat.age < 1) {
-            val age = cat.age.toString().split(".")[1]
-            LocalContext.current.resources.getQuantityString(
-                R.plurals.age_month,
-                age.toInt(),
-                age
-            )
-        } else {
-            val age = cat.age.toString().split(".")[0]
-            LocalContext.current.resources.getQuantityString(
-                R.plurals.age_year,
-                age.toInt(),
-                age
-            )
-        }
-
         Text(
-            text = "${cat.name} | $ageResourceValue",
+            text = "${pet.name} | ${pet.ageStringResource()}",
             color = orange900,
             fontSize = 16.sp,
             modifier = Modifier
@@ -180,7 +191,7 @@ private fun CatItemContent(cat: Cat) {
         )
 
         Text(
-            text = cat.breed,
+            text = pet.breed,
             modifier = Modifier
                 .constrainAs(breed) {
                     top.linkTo(nameAge.bottom)

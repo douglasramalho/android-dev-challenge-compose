@@ -18,6 +18,9 @@ package com.example.androiddevchallenge.ui.theme
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -60,17 +63,17 @@ fun MyTheme(
         Scaffold(
             topBar = {
                 TopAppBar(
+                    title = { Text(text = title) },
                     navigationIcon = {
                         if (navController.previousBackStackEntry != null) {
                             IconButton(onClick = { navController.navigateUp() }) {
-                                Image(
-                                    painter = painterResource(id = R.drawable.ic_back),
+                                Icon(
+                                    Icons.Filled.ArrowBack,
                                     contentDescription = null
                                 )
                             }
                         }
-                    },
-                    title = { Text(text = title) }
+                    }
                 )
             },
             content = {
