@@ -1,13 +1,38 @@
+/*
+ * Copyright 2021 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.example.androiddevchallenge.ui.detail
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.*
+import androidx.compose.material.Button
+import androidx.compose.material.Divider
+import androidx.compose.material.IconButton
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -148,12 +173,13 @@ private fun DetailContent(petDetail: PetForAdoption) {
                             },
                     )
 
-                    Row(modifier = Modifier
-                        .padding(top = 16.dp)
-                        .constrainAs(boxAge) {
-                            start.linkTo(parent.start)
-                            top.linkTo(breed.bottom)
-                        }
+                    Row(
+                        modifier = Modifier
+                            .padding(top = 16.dp)
+                            .constrainAs(boxAge) {
+                                start.linkTo(parent.start)
+                                top.linkTo(breed.bottom)
+                            }
                     ) {
                         BoxInfo(R.string.label_age.strValue(), petDetail.ageStringResource())
                         Spacer(modifier = Modifier.size(8.dp))
@@ -180,14 +206,15 @@ private fun DetailContent(petDetail: PetForAdoption) {
                             }
                     )
 
-                    Column(modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 16.dp)
-                        .constrainAs(boxLocation) {
-                            start.linkTo(parent.start)
-                            top.linkTo(boxAge.bottom)
-                            end.linkTo(parent.end)
-                        }
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 16.dp)
+                            .constrainAs(boxLocation) {
+                                start.linkTo(parent.start)
+                                top.linkTo(boxAge.bottom)
+                                end.linkTo(parent.end)
+                            }
                     ) {
                         Row {
                             Image(
