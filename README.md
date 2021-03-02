@@ -1,17 +1,20 @@
-# Put title of your app here
+Meow Finder - Cat Adoption
 
 <!--- Replace <OWNER> with your Github Username and <REPOSITORY> with the name of your repository. -->
 <!--- You can find both of these in the url bar when you open your repository in github. -->
-![Workflow result](https://github.com/<OWNER>/<REPOSITORY>/workflows/Check/badge.svg)
+![Workflow result](https://github.com/douglasramalho/meow-finder-cat-adoption/workflows/Check/badge.svg)
 
 
 ## :scroll: Description
-<!--- Describe your app in one or two sentences -->
+Meow Finder is an app developed using Jetpack Compose and its main goal is to provide a way for people for finding cats up for adoption.
 
 
 ## :bulb: Motivation and Context
 <!--- Optionally point readers to interesting parts of your submission. -->
 <!--- What are you especially proud of? -->
+The 3 first cats on the home screen are my own cats. And my main motivation to create this app came from them and from the love that I have for cats.
+
+I am very proud of the results I had using Jetpack Compose when creating this app. I am more familiar with it now.
 
 
 ## :camera_flash: Screenshots
