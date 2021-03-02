@@ -21,7 +21,7 @@ I am very proud of the results I had using Jetpack Compose when creating this ap
 <!-- You can add more screenshots here if you like -->
 <img src="/results/screenshot_1.png" width="260">&emsp;<img src="/results/screenshot_2.png" width="260">
 <br />
-<a href="/results/videp.mp4">Video App Demo</a>
+<a href="/results/video.mp4">Video App Demo</a>
 
 ## License
 ```
